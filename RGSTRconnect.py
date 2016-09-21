@@ -14,15 +14,29 @@ def readconfig(configfile,section='mysql'):
     return (db)
 
 def databaseconnect(configfile):
-    db_config = readconfig(configfile)
+    db_config=readconfig(configfile)
     try:
         print('Connecting to MySQL database...')
-        conn = MySQLConnection(**db_config)
+        conn=MySQLConnection(**db_config)
  
         if conn.is_connected():
             print('connection established.')
+            return conn
         else:
             print('connection failed.')
+        
  
     except Error as error:
         print(error)
+
+def databaselookup(UID,configfile):
+    conn=databaseconnect(configfile)
+    cursor=conn.cursor()
+    try:
+        cursor.execute("SELECT *\nFROM users\nWHERE CardID=\'%u\'"%(UID))
+        row= cursor.fetchall()
+        print (row)
+    except:
+        print("Invalid Card UID")
+        
+    
