@@ -35,8 +35,11 @@ def databaselookup(UID,configfile):
     try:
         cursor.execute("SELECT *\nFROM users\nWHERE CardID=\'%u\'"%(UID))
         row= cursor.fetchall()
-        print (row)
+        if row==[]:
+            print("Card is not registered")
+        else: 
+            print (row)
     except:
-        print("Invalid Card UID")
+        print("Error: Invalid Card UID")
         
     

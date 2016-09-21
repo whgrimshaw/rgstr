@@ -7,8 +7,12 @@ from time import sleep
 if __name__ == "__main__":
     configfile="config.ini"
     databaseconnect(configfile)
-    UID=int(input())
-    user=databaselookup(UID,configfile)
+    while True:
+        try:
+            UID=int(input("input UID"))
+            user=databaselookup(UID,configfile)
+        except:
+            print("Error")
     
         
     
