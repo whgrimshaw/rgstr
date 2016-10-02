@@ -1,6 +1,7 @@
 from mysql.connector import MySQLConnection, Error
 from configparser import ConfigParser
 
+#PARSES AND IMPORTS EXTERNAL CONFIG FILE- FORMATTED AS AN ARRAY
 def readconfig(configfile,section='mysql'):
     parser=ConfigParser()
     parser.read(configfile)
@@ -12,34 +13,18 @@ def readconfig(configfile,section='mysql'):
     else:
         print("Error reading config file- section doesnt exist")
     return (db)
-
+#ATTEMPTS TO ESTABLISH A CONNECTION BETWEEN THE PROGRAM AND THE DATABASE SERVER
 def databaseconnect(configfile):
     db_config=readconfig(configfile)
     try:
         print('Connecting to MySQL database...')
         conn=MySQLConnection(**db_config)
- 
+
         if conn.is_connected():
-            print('connection established.')
+            print('Connection established.')
             return conn
         else:
-            print('connection failed.')
-        
- 
+            print('Connection failed.')
     except Error as error:
-        print(error)
-
-def databaselookup(UID,configfile):
-    conn=databaseconnect(configfile)
-    cursor=conn.cursor()
-    try:
-        cursor.execute("SELECT *\nFROM users\nWHERE CardID=\'%u\'"%(UID))
-        row= cursor.fetchall()
-        if row==[]:
-            print("Card is not registered")
-        else: 
-            print (row)
-    except:
-        print("Error: Invalid Card UID")
-        
-    
+        print (error)
+        return (1)

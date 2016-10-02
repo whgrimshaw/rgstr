@@ -2,17 +2,21 @@ import time
 import calendar
 import mysql.connector
 from RGSTRconnect import *
-from time import sleep
+from RGSTRupdate import *
+from RGSTRsetup import *
 
 if __name__ == "__main__":
     configfile="config.ini"
-    databaseconnect(configfile)
+    #Connect to database
+    database=databaseconnect(configfile)
+    if database==(1):
+        dbsetup(configfile)
+    else:
+        pass
+
+    #Poll for cards
     while True:
-        try:
-            UID=int(input("input UID"))
-            user=databaselookup(UID,configfile)
-        except:
-            print("Error")
-    
-        
-    
+        UID=int(input("input UID"))
+        #Search database for cards
+        user=databaselookup(UID,configfile)
+        print (user)
