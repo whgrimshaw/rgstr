@@ -20,3 +20,5 @@ if __name__ == "__main__":
         #Search database for cards
         user=databaselookup(UID,configfile)
         print (user)
+        status=user[0][2][0]
+        print (status)
