@@ -19,6 +19,15 @@ if __name__ == "__main__":
         UID=int(input("input UID"))
         #Search database for cards
         user=databaselookup(UID,configfile)
+<<<<<<< HEAD
         print (user)
         status=user[0][2][0]
         print (chr(status))
+=======
+        try:
+            status=user[0][2][0]
+            #print (user)
+            print (chr(status))
+        except:
+            print("User",UID,"not found.")
+>>>>>>> origin/master

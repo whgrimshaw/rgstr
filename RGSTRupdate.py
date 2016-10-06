@@ -8,7 +8,11 @@ def databaselookup(UID,configfile):
         #cursor.execute("SELECT *\nFROM users\nWHERE CardID=\'%u\';"%(UID))
         row= cursor.fetchall()
         if row==[]:
+<<<<<<< HEAD
             print("Card is not registered")
+=======
+            pass
+>>>>>>> origin/master
         else:
             return row
     except:
