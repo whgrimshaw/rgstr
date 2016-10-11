@@ -1,6 +1,6 @@
 import mysql.connector
-input("Start mysql server and press enter")
 from RGSTRconnect import *
+input("Start mysql server and press enter")
 configfile="config.ini"
 conn=databaseconnect(configfile)
 cursor=conn.cursor()
@@ -21,5 +21,16 @@ for line in inputfile:
     print(Lastname)
     print(Form)
     print(Year)
-    cursor.execute("USE rgstr")
-    cursor.execute("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
+    try:
+        conn=databaseconnect(configfile)
+        cursor=conn.cursor()
+        cursor.execute("USE rgstr")
+        cursor.execute("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
+        cursor.execute("SELECT *\nFROM users;")
+        row= cursor.fetchall()
+        if row==[]:
+            print(Error)
+        else:
+            print(row)
+    except:
+        print(Error)
