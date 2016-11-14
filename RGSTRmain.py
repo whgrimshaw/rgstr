@@ -20,8 +20,8 @@ if __name__ == "__main__":
         #Search database for cards
         user=databaselookup(UID,configfile)
         try:
-            status=user[0][2][0]
-            #print (user)
-            print (chr(status))
+            #status=user
+            print (user)
+            #print (chr(status))
         except:
             print("User",UID,"not found.")
