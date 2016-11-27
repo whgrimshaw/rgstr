@@ -3,6 +3,7 @@ from tkinter import ttk
 import mysql.connector
 from RGSTRconnect import *
 from RGSTRadd import *
+import datetime
 #style
 title=("RGSTR")
 geometry=("300x330")
@@ -76,8 +77,8 @@ def runquery(queryentry):
             row=cursor.fetchall()
             for record in row:
                 for data in record:
-                    queryresult.insert('0.0',(data,"|"))
-                queryresult.insert('0.0','\n')
+                    queryresult.insert('end',(data,"|"))
+                queryresult.insert('end','\n')
                 
         except:
             conn.commit()
@@ -89,9 +90,11 @@ def runquery(queryentry):
     
 def importfile(filenameentry,log):
     log.delete('0.0','end')
+    
+    Datetime=datetime.datetime.now()
     try:
         filename=filenameentry.get()
-        result=rgstradd(filename)
+        result=rgstradd(filename,Datetime)
         log.insert('0.0',result)
     except:
         log.insert('0.0',"No file found")

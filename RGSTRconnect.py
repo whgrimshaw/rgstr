@@ -1,6 +1,6 @@
 from mysql.connector import MySQLConnection, Error
 from configparser import ConfigParser
-
+from RGSTRsetup import *
 #PARSES AND IMPORTS EXTERNAL CONFIG FILE- FORMATTED AS AN ARRAY
 def readconfig(configfile,section='mysql'):
     parser=ConfigParser()
@@ -27,4 +27,3 @@ def databaseconnect(configfile):
             print('Connection failed.')
     except Error as error:
         print (error)
-        return (1)

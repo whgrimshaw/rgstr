@@ -1,21 +1,7 @@
-import mysql.connector
-def dbsetup(configfile):
+from RGSTRconnect import *
+from mysql.connector import MySQLConnection, Error
+def dbsetup(configfile,cursor):
     input("Start mysql server and enter any key")
-    #CONNECT TO SERVER
-    try:
-        conn=mysql.connector.connect(host="localhost",user="root",passwd="root")
-        cursor=conn.cursor()
-        print("Connected to MySQL Server")
-    except:
-        print("Unable to connect to server.")
-        #CREATES DATABASE
-    try:
-        cursor.execute("CREATE DATABASE rgstr;") #creates database on current server
-        print ("Database 'rgstr' create successfully")
-    except:
-        print("Database already exists")
-    #SELECT THE DATABASE
-    cursor.execute("USE rgstr;")
     #CREATES user TABLE
     try:
         #print("CREATE TABLE users(\nCardID int NOT NULL PRIMARY KEY,\nFirstname varchar(15),\nLastname varchar(20),\n`Form` varchar (4),\n`Year` int(2));")
