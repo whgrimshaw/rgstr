@@ -4,9 +4,10 @@ import mysql.connector
 from RGSTRconnect import *
 from RGSTRadd import *
 import datetime
+import smtplib
 #style
 title=("RGSTR")
-geometry=("300x330")
+geometry=("250x340")
 icon=('favicon.ico')
 class mainapp:
     def __init__(self,root):
@@ -38,31 +39,31 @@ class mainapp:
             #(i)=ttk.Entry(frame).grid(row=row,column=2)
             row+=1
         ULN=ttk.Entry(frame)
-        ULN.grid(row=1,column=2)
+        ULN.grid(row=1,column=2,columnspan=2)
         Firstname=ttk.Entry(frame)
-        Firstname.grid(row=2,column=2)
+        Firstname.grid(row=2,column=2,columnspan=2)
         Lastname=ttk.Entry(frame)
-        Lastname.grid(row=3,column=2)
+        Lastname.grid(row=3,column=2,columnspan=2)
         Form=ttk.Entry(frame)
-        Form.grid(row=4,column=2)
-        button=ttk.Button(frame,text='Write Card',command=lambda: writecard(ULN)).grid(column=1,row=10)
-        button=ttk.Button(frame,text='Add user',command=lambda:print("test")).grid(column=2,row=10)
-        button=ttk.Button(frame,text='Scan card',command=lambda:print("scan")).grid(column=3,row=10)
+        Form.grid(row=4,column=2,columnspan=2)
+        button=ttk.Button(frame,text='Write Card',command=lambda: writecard(ULN)).grid(column=1,row=5,sticky='W')
+        button=ttk.Button(frame,text='Add user',command=lambda:print("test")).grid(column=2,row=5)
+        button=ttk.Button(frame,text='Scan card',command=lambda:print("scan")).grid(column=3,row=5,sticky='E')
     def importtab(self,root,frame):
-        label=ttk.Label(frame,text=".csv name")
-        label.grid(row=1,column=1)
         filenameentry=ttk.Entry(frame)
-        filenameentry.grid(row=1,column=2)
+        filenameentry.grid(row=1,column=1,sticky='W')
         log=tk.Text(frame,height='15',width='30')
-        button=ttk.Button(frame,text='Import',command=lambda: importfile(filenameentry,log)).grid(column=3,row=1)
+        button=ttk.Button(frame,text='Import',command=lambda: importfile(filenameentry,log)).grid(column=3,row=1,sticky='W')
         log.grid(row=2,columnspan=4,sticky='S')
     def querytab(self,root,frame):
-        buttons=("runquery","viewusers","viewstatus")
         queryentry=tk.Text(frame,height='15',width='30')
         Button=ttk.Button(frame,text="Run",command=lambda:runquery(queryentry)).grid(row=1,column=1)
+        Button=ttk.Button(frame,text="View Users",command=lambda:viewtable(queryentry,'users')).grid(row=1,column=2)
+        Button=ttk.Button(frame,text="View Status",command=lambda:viewtable(queryentry,'status')).grid(row=1,column=3)
         queryentry.grid(row=2,columnspan=4,sticky='S')
-        label=ttk.Label(frame,text="")
-        label.grid(row=3,columnspan=4,sticky='S')
+        Button=ttk.Button(frame,text="Email report",command=lambda:report(queryentry)).grid(row=3,column=1)
+    def reporttab(self,root,frame):
+        pass
 def runquery(queryentry):
     query=queryentry.get('0.0','end')
     print(query)
@@ -86,6 +87,29 @@ def runquery(queryentry):
     except:
         queryresult.insert('0.0','Error')
     queryresult.pack()
+    global queryresult
+
+def viewtable(queryentry,table):
+    queryentry.delete('0.0','end')
+    queryentry.insert('0.0',"SELECT *\nFROM {};".format(table))
+    runquery(queryentry)
+
+def report(queryentry):
+    To="10wgrimshaw@huttongrammar.org"
+    runquery(queryentry)
+    querydata=queryresult.get('0.0','end')
+    header= """From: RGSTR email report <from@fromdomain.com>
+Subject: RGSTR report
+
+DO NOT REPLY TO THIS EMAIL. I AM A BOT.
+"""
+    msg=header+querydata
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login("noreplyrgstr@gmail.com", "a1b2c3a1b2c3")
+    server.sendmail("noreplyrgstr@gmail.com",To, msg)
+    server.quit()
+
         
     
 def importfile(filenameentry,log):

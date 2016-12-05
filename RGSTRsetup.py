@@ -1,7 +1,6 @@
 from RGSTRconnect import *
 from mysql.connector import MySQLConnection, Error
 def dbsetup(configfile,cursor):
-    input("Start mysql server and enter any key")
     #CREATES user TABLE
     try:
         #print("CREATE TABLE users(\nCardID int NOT NULL PRIMARY KEY,\nFirstname varchar(15),\nLastname varchar(20),\n`Form` varchar (4),\n`Year` int(2));")
