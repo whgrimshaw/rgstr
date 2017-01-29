@@ -32,21 +32,20 @@ class mainapp:
                 break
             nb.add(frame,text=i)
     def addtab(self,root,frame):
-        fields=("ULN","Firstname","Lastname","Form")
+        fields=("Card ID","Firstname","Lastname","Form")
         row=1
         for i in fields:
             label=ttk.Label(frame,text=i).grid(row=row,column=1)
             #(i)=ttk.Entry(frame).grid(row=row,column=2)
             row+=1
-        ULN=ttk.Entry(frame)
-        ULN.grid(row=1,column=2,columnspan=2)
+        CardID=ttk.Entry(frame)
+        CardID.grid(row=1,column=2,columnspan=2)
         Firstname=ttk.Entry(frame)
         Firstname.grid(row=2,column=2,columnspan=2)
         Lastname=ttk.Entry(frame)
         Lastname.grid(row=3,column=2,columnspan=2)
         Form=ttk.Entry(frame)
         Form.grid(row=4,column=2,columnspan=2)
-        button=ttk.Button(frame,text='Write Card',command=lambda: writecard(ULN)).grid(column=1,row=5,sticky='W')
         button=ttk.Button(frame,text='Add user',command=lambda:print("test")).grid(column=2,row=5)
         button=ttk.Button(frame,text='Scan card',command=lambda:print("scan")).grid(column=3,row=5,sticky='E')
     def importtab(self,root,frame):
@@ -62,6 +61,7 @@ class mainapp:
         Button=ttk.Button(frame,text="View Status",command=lambda:viewtable(queryentry,'status')).grid(row=1,column=3)
         queryentry.grid(row=2,columnspan=4,sticky='S')
         Button=ttk.Button(frame,text="Email report",command=lambda:report(queryentry)).grid(row=3,column=1)
+        Button=ttk.Button(frame,text="Emergency report",command=lambda:emergencybutton(queryentry)).grid(row=3,column=3)
     def reporttab(self,root,frame):
         pass
 def runquery(queryentry):
@@ -69,35 +69,53 @@ def runquery(queryentry):
     print(query)
     queryresults=tk.Tk()
     queryresults.title(title)
-    queryresult=tk.Text(queryresults)
+    queryresult=ttk.Treeview(queryresults)
     try:
         conn=databaseconnect(configfile='config.ini')
         cursor=conn.cursor()
         cursor.execute(query)
         try:
             row=cursor.fetchall()
-            for record in row:
-                for data in record:
-                    queryresult.insert('end',(data,"|"))
-                queryresult.insert('end','\n')
-                
+            columns=('ID','Firstname','Lastname','Form','Year')
+            queryresult['columns']=columns
+            for i in queryresult['columns']:
+                print (i)
+                queryresult.column(i,anchor='e')
+                queryresult.heading(i,text=i)
+            for i, item in enumerate(row):
+                queryresult.insert('','end',text=i,values=item)
         except:
             conn.commit()
-            queryresult.insert('0.0','Query Ran')
+            queryresult.insert('','end','Query Ran')
     except:
-        queryresult.insert('0.0','Error')
+        queryresult.insert('','end','Error')
     queryresult.pack()
     global queryresult
+
+
 
 def viewtable(queryentry,table):
     queryentry.delete('0.0','end')
     queryentry.insert('0.0',"SELECT *\nFROM {};".format(table))
     runquery(queryentry)
 
+def emergencybutton(queryentry):
+    queryentry.delete('0.0','end')
+    queryentry.insert('0.0','SELECT users.Firstname,users.Lastname,users.Form\nFROM users,status\nWHERE users.CardID=status.CardID\nAND status.Status="0"\nORDER BY users.Form,users.Lastname,users.Firstname;')
+    report(queryentry)
 def report(queryentry):
     To="10wgrimshaw@huttongrammar.org"
     runquery(queryentry)
-    querydata=queryresult.get('0.0','end')
+    querydata=("")
+    rows=queryresult.get_children()
+    print (rows)
+    for i in rows:
+        columns=queryresult.set(i)
+        for a in columns:
+            print(columns[a])
+            querydata=(querydata+columns[a]+' | ')
+        querydata=(querydata+'\n')
+    print(querydata)
     header= """From: RGSTR email report <from@fromdomain.com>
 Subject: RGSTR report
 
@@ -109,7 +127,6 @@ DO NOT REPLY TO THIS EMAIL. I AM A BOT.
     server.login("noreplyrgstr@gmail.com", "a1b2c3a1b2c3")
     server.sendmail("noreplyrgstr@gmail.com",To, msg)
     server.quit()
-
         
     
 def importfile(filenameentry,log):

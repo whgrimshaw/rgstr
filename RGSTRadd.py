@@ -24,7 +24,7 @@ def rgstradd(filename,datetime):
         print(Form)
         print(Year)
         try:
-            #print("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
+            print("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
             cursor.execute("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
             cursor.execute("SELECT *\nFROM users;")
             row= cursor.fetchall()
@@ -33,7 +33,7 @@ def rgstradd(filename,datetime):
                 error=(error,"\n Error on line:",linenumber,Error)
             else:
                 conn.commit()
-                #print("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
+                print("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
                 cursor.execute("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
                 conn.commit()
                 success+=1
@@ -42,3 +42,25 @@ def rgstradd(filename,datetime):
         except:
             error=(error,"\n Error on line:",linenumber,Error)
     return(success,"users were added to the database\n\n",error)
+def rgstradd1(filename,datetime):
+    configfile="config.ini"
+    conn=databaseconnect(configfile)
+    cursor=conn.cursor()
+    error=''
+    success=0
+    try:
+        #print("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
+        cursor.execute("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
+        cursor.execute("SELECT *\nFROM users;")
+        row= cursor.fetchall()
+        if row==[]:
+            conn.rollback()
+            error=(error,"\n Error on line:",linenumber,Error)
+        else:
+            conn.commit()
+            #print("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
+            cursor.execute("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
+            conn.commit()
+    except:
+        error=(error,"\n Error on line:",linenumber,Error)
+    print(success,"users were added to the database\n\n",error)
