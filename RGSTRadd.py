@@ -1,7 +1,7 @@
 import mysql.connector
 from RGSTRconnect import *
 
-def rgstradd(filename,datetime):
+def rgstrimport(filename,datetime):
     configfile="config.ini"
     conn=databaseconnect(configfile)
     cursor=conn.cursor()
@@ -24,30 +24,31 @@ def rgstradd(filename,datetime):
         print(Form)
         print(Year)
         try:
-            print("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
+            #print("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
             cursor.execute("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
-            cursor.execute("SELECT *\nFROM users;")
+            cursor.execute("SELECT *\nFROM users\nWHERE CardID=\'{}\';".format(CardID))
+            print("SELECT *\nFROM users\nWHERE CardID=\'{}\';".format(CardID))
             row= cursor.fetchall()
+            print (row)
             if row==[]:
                 conn.rollback()
                 error=(error,"\n Error on line:",linenumber,Error)
             else:
                 conn.commit()
-                print("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
+                #print("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
                 cursor.execute("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
                 conn.commit()
                 success+=1
-            
-                
         except:
-            error=(error,"\n Error on line:",linenumber,Error)
-    return(success,"users were added to the database\n\n",error)
-def rgstradd1(filename,datetime):
+            conn.rollback()
+            error=(error+str(CardID)+" in database ("+str(linenumber)+")")
+    return(str(success)+" Users added\n"+"Errors-\n"+error)
+
+
+def rgstradd(CardID,Firstname,Lastname,Form,Year,datetime):
     configfile="config.ini"
     conn=databaseconnect(configfile)
     cursor=conn.cursor()
-    error=''
-    success=0
     try:
         #print("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
         cursor.execute("INSERT INTO users\nVALUES(\'{}\',\'{}\',\'{}\',\'{}\',\'{}\');".format(CardID,Firstname,Lastname,Form,Year))
@@ -55,12 +56,10 @@ def rgstradd1(filename,datetime):
         row= cursor.fetchall()
         if row==[]:
             conn.rollback()
-            error=(error,"\n Error on line:",linenumber,Error)
         else:
             conn.commit()
             #print("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
             cursor.execute("INSERT INTO status\nVALUES(\'{}\',\'1\',\'{}\');".format(CardID,datetime))
             conn.commit()
     except:
-        error=(error,"\n Error on line:",linenumber,Error)
-    print(success,"users were added to the database\n\n",error)
+        print("ERROR")

@@ -30,9 +30,10 @@ class mainapp:
                 self.querytab(root,frame)
             else:
                 break
-            nb.add(frame,text=i)
+            text=("{}{}").format(i[0].upper(),i[1:])
+            nb.add(frame,text=(text))
     def addtab(self,root,frame):
-        fields=("Card ID","Firstname","Lastname","Form")
+        fields=("Card ID","Firstname","Lastname","Form","Year")
         row=1
         for i in fields:
             label=ttk.Label(frame,text=i).grid(row=row,column=1)
@@ -46,8 +47,9 @@ class mainapp:
         Lastname.grid(row=3,column=2,columnspan=2)
         Form=ttk.Entry(frame)
         Form.grid(row=4,column=2,columnspan=2)
-        button=ttk.Button(frame,text='Add user',command=lambda:print("test")).grid(column=2,row=5)
-        button=ttk.Button(frame,text='Scan card',command=lambda:print("scan")).grid(column=3,row=5,sticky='E')
+        Year=ttk.Entry(frame)
+        Year.grid(row=5,column=2,columnspan=2)
+        button=ttk.Button(frame,text='Add user',command=lambda: adduser(CardID,Firstname,Lastname,Form,Year)).grid(column=2,row=6)
     def importtab(self,root,frame):
         filenameentry=ttk.Entry(frame)
         filenameentry.grid(row=1,column=1,sticky='W')
@@ -61,7 +63,7 @@ class mainapp:
         Button=ttk.Button(frame,text="View Status",command=lambda:viewtable(queryentry,'status')).grid(row=1,column=3)
         queryentry.grid(row=2,columnspan=4,sticky='S')
         Button=ttk.Button(frame,text="Email report",command=lambda:report(queryentry)).grid(row=3,column=1)
-        Button=ttk.Button(frame,text="Emergency report",command=lambda:emergencybutton(queryentry)).grid(row=3,column=3)
+        Button=ttk.Button(frame,text="Emergency report",command=lambda:emergencybutton(queryentry)).grid(row=3,column=2)
     def reporttab(self,root,frame):
         pass
 def runquery(queryentry):
@@ -133,16 +135,22 @@ def importfile(filenameentry,log):
     log.delete('0.0','end')
     
     Datetime=datetime.datetime.now()
-    try:
-        filename=filenameentry.get()
-        result=rgstradd(filename,Datetime)
-        log.insert('0.0',result)
-    except:
-        log.insert('0.0',"No file found")
+    filename=filenameentry.get()
+    result=rgstrimport(filename,Datetime)
+    log.insert('0.0',result)
+    #log.insert('0.0',"No file found")
 def writecard(ULN):
     uln=ULN.get()
     print(uln)
-                
+def adduser(CardID,Firstname,Lastname,Form,Year):
+    Datetime=datetime.datetime.now()
+    CardID=CardID.get()
+    Firstname=Firstname.get()
+    Lastname=Lastname.get()
+    Form=Form.get()
+    Year=Year.get()
+    print(CardID,Firstname,Lastname,Form,Year)
+    rgstradd(CardID,Firstname,Lastname,Form,Year,Datetime)
             
 def main():
     root=tk.Tk()
