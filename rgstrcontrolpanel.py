@@ -58,7 +58,7 @@ class mainapp:
         log.grid(row=2,columnspan=4,sticky='S')
     def querytab(self,root,frame):
         queryentry=tk.Text(frame,height='15',width='30')
-        Button=ttk.Button(frame,text="Run",command=lambda:runquery(queryentry)).grid(row=1,column=1)
+        Button=ttk.Button(frame,text="Run",command=lambda:runquery(queryentry,(" "," "," "," "," "," "))).grid(row=1,column=1)
         Button=ttk.Button(frame,text="View Users",command=lambda:viewtable(queryentry,'users')).grid(row=1,column=2)
         Button=ttk.Button(frame,text="View Status",command=lambda:viewtable(queryentry,'status')).grid(row=1,column=3)
         queryentry.grid(row=2,columnspan=4,sticky='S')
@@ -66,7 +66,7 @@ class mainapp:
         Button=ttk.Button(frame,text="Emergency report",command=lambda:emergencybutton(queryentry)).grid(row=3,column=2)
     def reporttab(self,root,frame):
         pass
-def runquery(queryentry):
+def runquery(queryentry,columns):
     query=queryentry.get('0.0','end')
     print(query)
     queryresults=tk.Tk()
@@ -78,7 +78,6 @@ def runquery(queryentry):
         cursor.execute(query)
         try:
             row=cursor.fetchall()
-            columns=('ID','Firstname','Lastname','Form','Year')
             queryresult['columns']=columns
             for i in queryresult['columns']:
                 print (i)
@@ -99,15 +98,26 @@ def runquery(queryentry):
 def viewtable(queryentry,table):
     queryentry.delete('0.0','end')
     queryentry.insert('0.0',"SELECT *\nFROM {};".format(table))
-    runquery(queryentry)
+    if table=="users":
+        columns=('ID','Firstname','Lastname','Form','Year')
+    elif table=="status":
+        columns=('ID','Status','DateTime')
+    else:
+        columns=()
+    runquery(queryentry,columns)
 
 def emergencybutton(queryentry):
     queryentry.delete('0.0','end')
     queryentry.insert('0.0','SELECT users.Firstname,users.Lastname,users.Form\nFROM users,status\nWHERE users.CardID=status.CardID\nAND status.Status="0"\nORDER BY users.Form,users.Lastname,users.Firstname;')
     report(queryentry)
 def report(queryentry):
-    To="10wgrimshaw@huttongrammar.org"
-    runquery(queryentry)
+    To="10wgrimshaw@huttongrammar.org,williamhenrygrimshaw@gmail.com"
+    query=queryentry.get('0.0','end')
+    if (query)=='SELECT users.Firstname,users.Lastname,users.Form\nFROM users,status\nWHERE users.CardID=status.CardID\nAND status.Status="0"\nORDER BY users.Form,users.Lastname,users.Firstname;':
+        columns=("Firstname","Lastname","Status")
+    else:
+        columns=("","","","","","","","","")
+    runquery(queryentry,columns)
     querydata=("")
     rows=queryresult.get_children()
     print (rows)

@@ -1,5 +1,4 @@
-import time
-import calendar
+from time import sleep
 import mysql.connector
 from RGSTRconnect import *
 from RGSTRupdate import *
