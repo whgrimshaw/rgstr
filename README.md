@@ -1,38 +1,19 @@
 # rgstr
 NFC based registration system for schools
 
-Year 13 A level project. 
-v.1 Uses an NFC card to sign in and out of the database register.
+Year 13 A level project. Signs students in or out of a short leave absence database by scanning NFC cards.
 
+## System requirements:
 
-LIBRARY RGSTRCONNECT
-SUB readconfig(configfile,section='mysql'):
-	parser<-ConfigParser()
-	parser.read(configfile)
-	db<-{}
-	if parser has section ("section"):	
-		items=parser.items(section)
-		for item in items:
-			db[item[0]]<-item[1]
-		endfor
-	else:
-		print Error
-	endif
-	return db
-endsub
+RGSTRControlpanel.py
+-Python 3.4+
+-mysql-connector for python3.4+
+-A MySQL server.
 
-SUB databaseconnect(configfile):
-	db_config<-readconfig(configfile)
-	try:
-		print Connecting
-		conn<-MySQLConnection(**db_config)
-		
-		if connected:
-			print Connected
-			return conn
-		else:
-			print Failure
-		endif
-	except:
-		print (Error)
-endsub
+RGSTR.py
+-Python 3.4+
+-mysql-connector for python3.4+
+-nxppy
+-Raspbian Jessie+
+-gTTS
+-A MySQL server.
