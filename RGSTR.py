@@ -1,8 +1,8 @@
 from time import sleep
 import mysql.connector
-from RGSTRconnect import *
-from RGSTRupdate import *
-from RGSTRsetup import *
+from RGSTRLibrary.RGSTRconnect import *
+from RGSTRLibrary.RGSTRupdate import *
+from RGSTRLibrary.RGSTRsetup import *
 import nxppy
 import pygame
 from gtts import gTTS
