@@ -63,8 +63,6 @@ class mainapp:
         queryentry.grid(row=2,columnspan=4,sticky='S')
         Button=ttk.Button(frame,text="Email report",command=lambda:report(queryentry)).grid(row=3,column=1)
         Button=ttk.Button(frame,text="Emergency report",command=lambda:emergencybutton(queryentry)).grid(row=3,column=2)
-    def reporttab(self,root,frame):
-        pass
 def runquery(queryentry,table):
     query=queryentry.get('0.0','end')
     print(query)
@@ -111,7 +109,7 @@ def emergencybutton(queryentry):
     report(queryentry)
 def report(queryentry):
     To="10wgrimshaw@huttongrammar.org"
-    runquery(queryentry)
+    runquery(queryentry,"")
     querydata=("")
     rows=queryresult.get_children()
     print (rows)
@@ -134,17 +132,12 @@ DO NOT REPLY TO THIS EMAIL. I AM A BOT.
     server.sendmail("noreplyrgstr@gmail.com",To, msg)
     server.quit()
         
-    
 def importfile(filenameentry,log):
     log.delete('0.0','end')
     Datetime=datetime.datetime.now()
     filename=filenameentry.get()
     result=rgstrimport(filename,Datetime)
     log.insert('0.0',result)
-    #log.insert('0.0',"No file found")
-def writecard(ULN):
-    uln=ULN.get()
-    print(uln)
 def adduser(CardID,Firstname,Lastname,Form,Year):
     Datetime=datetime.datetime.now()
     CardID=CardID.get()
@@ -153,8 +146,7 @@ def adduser(CardID,Firstname,Lastname,Form,Year):
     Form=Form.get()
     Year=Year.get()
     print(CardID,Firstname,Lastname,Form,Year)
-    rgstradd(CardID,Firstname,Lastname,Form,Year,Datetime)
-            
+    rgstradd(CardID,Firstname,Lastname,Form,Year,Datetime)        
 def main():
     root=tk.Tk()
     root.geometry(geometry)
